@@ -15,6 +15,15 @@ nimish --all
 nimish -a
 ```
 
+**Run as Nim file**
+
+You can pass the same parameters as normal Nim's file, make
+sure filename is at the end of the parameters list.
+
+```bash
+nimish c -r example.nim.c
+```
+
 ## Example
 
 **example.nim.c**
@@ -51,3 +60,5 @@ proc hello(a: int) =
   echo 3 + 4
   echo "string"
 ```
+
+

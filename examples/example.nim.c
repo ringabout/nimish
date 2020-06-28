@@ -8,3 +8,6 @@ proc hello(a: int) =
   echo text
   echo Add(3, 4)
   echo name
+
+
+hello(12)
