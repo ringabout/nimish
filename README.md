@@ -1,5 +1,5 @@
 # nimish
-Make Nim support C macro.
+Make Nim support C macro for fun!
 
 ## Usage
 
