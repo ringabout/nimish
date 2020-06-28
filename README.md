@@ -6,10 +6,10 @@ Make Nim support C macro.
 **translate single file**
 
 ```bash
-nimish example.nim.c
+nimish example.nish
 ```
 
-**translate all files(must be with the extension ".c")**
+**translate all files(must be with the extension ".nish")**
 ```bash
 nimish --all
 nimish -a
@@ -21,12 +21,12 @@ You can pass the same parameters as normal Nim's file, make
 sure filename is at the end of the parameters list.
 
 ```bash
-nimish c -r example.nim.c
+nimish c -r example.nish
 ```
 
 ## Example
 
-**example.nim.c**
+**example.nish**
 
 ```nim
 #define text 12

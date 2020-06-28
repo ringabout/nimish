@@ -1,17 +1,28 @@
 import os, osproc
-import strformat, strutils
+import strformat
 import parseopt
 
 
-proc translate(filename: string): string {.inline.} =
-  let 
-    src = filename.addFileExt("c")
+proc translate(filename: string, local = false): string {.inline.} =
+  let
+    (dir, name, _) = filename.splitFile
 
-  result = filename
-  result.removeSuffix(".c")
-  result = result.addFileExt("nim")
-  moveFile(filename, src)
-  discard execProcess(fmt"gcc -E {src} -o {result}")
+  var cacheDir: string
+  if not local:
+    cacheDir = getTempDir() / "nimishcache"
+  else:
+    cacheDir = dir / "nimishcache"
+  let
+    cacheFile = cacheDir / (name & ".c")
+
+  createDir(cacheDir)
+
+  if existsFile(filename):
+    result = cacheDir / (name & ".nim")
+    copyFile(filename, cacheFile)
+    discard execProcess(fmt"gcc -E {cacheFile} -o {result}")
+  else:
+    raise newException(IOError, filename & "doesn't exist.")
 
 
 proc cmdopt*() =
@@ -19,6 +30,7 @@ proc cmdopt*() =
     op = initOptParser()
     filename: string
     compile = false
+    local = true
   while true:
     op.next()
     case op.kind
@@ -27,10 +39,11 @@ proc cmdopt*() =
       of "help", "h":
         stdout.write("Usage: nimish file...")
       of "all", "a":
-        for file in walkFiles("*.c"):
+        for file in walkFiles("*.nish"):
           discard translate(file)
       of "run", "r":
         compile = true
+        local = false
       else:
         discard
     of cmdArgument:
@@ -39,7 +52,7 @@ proc cmdopt*() =
       break
 
   if filename.len != 0:
-    let dest = translate(filename)
+    let dest = translate(filename, local)
     if compile:
       var command = "nim "
       for i in 1 ..< paramCount():
